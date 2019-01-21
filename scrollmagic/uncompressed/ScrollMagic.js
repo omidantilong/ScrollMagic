@@ -34,7 +34,7 @@
 	ScrollMagic.version = "2.0.6";
 
 	// TODO: temporary workaround for chrome's scroll jitter bug
-	window.addEventListener("mousewheel", function () {});
+	window.addEventListener("mousewheel", function () {}, { passive: true });
 
 	// global const
 	var PIN_SPACER_ATTRIBUTE = "data-scrollmagic-pin-spacer";
@@ -127,8 +127,8 @@
 			// update container size immediately
 			_viewPortSize = getViewportSize();
 			// set event handlers
-			_options.container.addEventListener("resize", onChange);
-			_options.container.addEventListener("scroll", onChange);
+			_options.container.addEventListener("resize", onChange, { passive: true });
+			_options.container.addEventListener("scroll", onChange, { passive: true });
 
 			var ri = parseInt(_options.refreshInterval, 10);
 			_options.refreshInterval = _util.type.Number(ri) ? ri : DEFAULT_OPTIONS.refreshInterval;
@@ -704,8 +704,8 @@
 			while (i--) {
 				_sceneObjects[i].destroy(resetScenes);
 			}
-			_options.container.removeEventListener("resize", onChange);
-			_options.container.removeEventListener("scroll", onChange);
+			_options.container.removeEventListener("resize", onChange, { passive: true });
+			_options.container.removeEventListener("scroll", onChange, { passive: true });
 			_util.cAF(_updateTimeout);
 			log(3, "destroyed " + NAMESPACE + " (reset: " + (resetScenes ? "true" : "false") + ")");
 			return null;
@@ -1239,7 +1239,7 @@
 				updateDuration(true);
 				updateTriggerElementPosition(true);
 				updateScrollOffset();
-				_controller.info("container").addEventListener('resize', onContainerResize);
+				_controller.info("container").addEventListener('resize', onContainerResize, { passive: true });
 				controller.addScene(Scene);
 				Scene.trigger("add", {
 					controller: _controller
@@ -1289,7 +1289,7 @@
 		 */
 		this.remove = function () {
 			if (_controller) {
-				_controller.info("container").removeEventListener('resize', onContainerResize);
+				_controller.info("container").removeEventListener('resize', onContainerResize, { passive: true });
 				var tmpParent = _controller;
 				_controller = undefined;
 				tmpParent.removeScene(Scene);
@@ -2250,9 +2250,9 @@
 			}
 
 			// add listener to document to update pin position in case controller is not the document.
-			window.addEventListener('scroll', updatePinInContainer);
-			window.addEventListener('resize', updatePinInContainer);
-			window.addEventListener('resize', updateRelativePinSpacer);
+			window.addEventListener('scroll', updatePinInContainer, { passive: true });
+			window.addEventListener('resize', updatePinInContainer, { passive: true });
+			window.addEventListener('resize', updateRelativePinSpacer, { passive: true });
 			// add mousewheel listener to catch scrolls over fixed elements
 			_pin.addEventListener("mousewheel", onMousewheelOverPin);
 			_pin.addEventListener("DOMMouseScroll", onMousewheelOverPin);
@@ -2303,9 +2303,9 @@
 						delete _pin.___origStyle;
 					}
 				}
-				window.removeEventListener('scroll', updatePinInContainer);
-				window.removeEventListener('resize', updatePinInContainer);
-				window.removeEventListener('resize', updateRelativePinSpacer);
+				window.removeEventListener('scroll', updatePinInContainer, { passive: true });
+				window.removeEventListener('resize', updatePinInContainer, { passive: true });
+				window.removeEventListener('resize', updateRelativePinSpacer, { passive: true });
 				_pin.removeEventListener("mousewheel", onMousewheelOverPin);
 				_pin.removeEventListener("DOMMouseScroll", onMousewheelOverPin);
 				_pin = undefined;
